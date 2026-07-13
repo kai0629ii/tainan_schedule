@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台南・一日的弧線</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;600&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Noto Sans TC', sans-serif;
+    color:#3B2A1A;
+    background:#FCEFD8;
+    position:relative;
+    overflow-x:hidden;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+  }
+  .grain{
+    position:fixed; inset:0; z-index:0;
+    opacity:0.035; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .sky{
+    position:fixed;
+    right:-10vw; top:-10vh;
+    width:70vw; height:70vw;
+    max-width:900px; max-height:900px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #F5DCA6 0%, #F3A46B 45%, transparent 70%);
+    opacity:0.55;
+    z-index:0;
+    filter:blur(6px);
+  }
+  .wrap{
+    position:relative;
+    z-index:1;
+    padding:8vh 8vw;
+    max-width:900px;
+  }
+  .eyebrow{
+    font-family:'Zhi Mang Xing', cursive;
+    font-size:1.4rem;
+    opacity:0.75;
+    margin-bottom:1.2rem;
+  }
+  h1{
+    font-family:'Noto Serif TC', serif;
+    font-weight:700;
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.2;
+    max-width:15ch;
+    margin-bottom:1.6rem;
+  }
+  p.sub{
+    max-width:46ch;
+    font-weight:300;
+    line-height:1.9;
+    font-size:1.05rem;
+    opacity:0.85;
+    margin-bottom:2.8rem;
+  }
+  .routes{
+    display:flex;
+    flex-direction:column;
+    gap:1rem;
+    max-width:520px;
+  }
+  .route-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:1.4rem 1.6rem;
+    border:1px solid rgba(59,42,26,0.25);
+    border-radius:14px;
+    text-decoration:none;
+    color:inherit;
+    background:rgba(255,255,255,0.25);
+    transition:background .25s ease, transform .25s ease, border-color .25s ease;
+  }
+  .route-card:hover{
+    background:rgba(255,255,255,0.5);
+    border-color:rgba(59,42,26,0.5);
+    transform:translateX(4px);
+  }
+  .route-card .info{
+    display:flex;
+    flex-direction:column;
+    gap:.35rem;
+  }
+  .route-card .info .name{
+    font-family:'Noto Serif TC', serif;
+    font-weight:600;
+    font-size:1.25rem;
+  }
+  .route-card .info .desc{
+    font-size:0.88rem;
+    opacity:0.7;
+    font-weight:300;
+  }
+  .route-card .arrow{
+    font-size:1.4rem;
+    opacity:0.6;
+    flex-shrink:0;
+  }
+  .route-card.disabled{
+    opacity:0.45;
+    pointer-events:none;
+  }
+  footer{
+    margin-top:3rem;
+    font-size:0.85rem;
+    opacity:0.55;
+    letter-spacing:1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="sky"></div>
+
+<div class="wrap">
+  <div class="eyebrow">台南・行程筆記</div>
+  <h1>從清晨的碗粿<br>走到深夜的燈光</h1>
+  <p class="sub">收在這裡的,是一條在府城慢慢走的路線。點進去,跟著時間從早到晚滑過六個停靠點。</p>
+
+  <div class="routes">
+    <a class="route-card" href="tainan_itinerary.html">
+      <div class="info">
+        <span class="name">台南・一日的弧線</span>
+        <span class="desc">碗粿 → 逛街 → 豆腐冰 → 漁光島 → 晚餐 → 聊天</span>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+
+  <footer>更多路線,之後再慢慢加進來。</footer>
+</div>
+
+</body>
+</html>
