@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台南・一日的弧線</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;600&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-dark:#2A2018;
+    --ink-light:#F7EFDD;
+    --line-dark:#2A2018;
+    --line-light:#F7EFDD;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Noto Sans TC', sans-serif;
+    color:var(--ink-dark);
+    overflow-x:hidden;
+    position:relative;
+  }
+  .bg-layer{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:#FCEFD8;
+    transition:background-color 1s ease;
+  }
+  .grain{
+    position:fixed; inset:0; z-index:-1;
+    opacity:0.035; pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding:8vh 8vw;
+    position:relative;
+  }
+  .hero .eyebrow{
+    font-family:'Zhi Mang Xing', cursive;
+    font-size:1.4rem;
+    letter-spacing:2px;
+    opacity:0.75;
+    margin-bottom:1.2rem;
+  }
+  .hero h1{
+    font-family:'Noto Serif TC', serif;
+    font-weight:700;
+    font-size:clamp(2.6rem, 7vw, 5.2rem);
+    line-height:1.15;
+    max-width:14ch;
+  }
+  .hero p.sub{
+    margin-top:1.8rem;
+    max-width:42ch;
+    font-weight:300;
+    line-height:1.9;
+    font-size:1.05rem;
+    opacity:0.85;
+  }
+  .hero .arc-hint{
+    margin-top:3.5rem;
+    font-size:0.85rem;
+    letter-spacing:3px;
+    opacity:0.55;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+  }
+  .hero .arc-hint::after{
+    content:'';
+    width:36px; height:1px;
+    background:currentColor;
+    display:inline-block;
+  }
+
+  /* ---------- Timeline track (mobile top bar) ---------- */
+  .track-bar{
+    position:fixed;
+    top:0; left:0; right:0;
+    height:4px;
+    z-index:50;
+    background:rgba(0,0,0,0.08);
+  }
+  .track-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#FCEFD8,#F5DCA6,#CFE8DE,#F3A46B,#C97B93,#23283F);
+    transition:width .1s linear;
+  }
+
+  /* ---------- Side sun-arc (desktop) ---------- */
+  .arc-wrap{
+    position:fixed;
+    right:2.5vw;
+    top:0;
+    height:100vh;
+    width:120px;
+    z-index:40;
+    display:none;
+    pointer-events:none;
+  }
+  @media(min-width:900px){
+    .arc-wrap{ display:block; }
+  }
+  .arc-wrap svg{ width:100%; height:100%; overflow:visible; }
+  .arc-dot-label{
+    font-family:'Noto Serif TC', serif;
+    font-size:11px;
+    opacity:0.6;
+  }
+
+  /* ---------- Stops ---------- */
+  .stop{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    padding:10vh 8vw;
+    position:relative;
+  }
+  .stop-inner{
+    max-width:640px;
+  }
+  .stop-index{
+    font-family:'Zhi Mang Xing', cursive;
+    font-size:1.6rem;
+    opacity:0.6;
+    display:block;
+    margin-bottom:0.4rem;
+  }
+  .stop-time{
+    font-family:'Zhi Mang Xing', cursive;
+    font-size:2.6rem;
+    display:inline-block;
+    margin-bottom:1rem;
+  }
+  .stop h2{
+    font-family:'Noto Serif TC', serif;
+    font-weight:600;
+    font-size:clamp(1.8rem, 4vw, 3rem);
+    line-height:1.3;
+    margin-bottom:1.1rem;
+  }
+  .stop .tag{
+    display:inline-block;
+    font-size:0.78rem;
+    letter-spacing:2px;
+    border:1px solid currentColor;
+    border-radius:999px;
+    padding:0.25rem 0.9rem;
+    opacity:0.7;
+    margin-bottom:1.4rem;
+  }
+  .stop p.note{
+    line-height:2;
+    font-weight:300;
+    font-size:1.02rem;
+    max-width:52ch;
+    opacity:0.92;
+  }
+  .stop .meta{
+    margin-top:1.6rem;
+    font-size:0.92rem;
+    line-height:1.9;
+    opacity:0.75;
+  }
+  .stop .meta strong{ font-weight:600; }
+  .stop a.map-link{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    margin-top:1.6rem;
+    font-size:0.92rem;
+    text-decoration:none;
+    color:inherit;
+    border-bottom:1px solid currentColor;
+    padding-bottom:2px;
+    opacity:0.85;
+    transition:opacity .2s;
+  }
+  .stop a.map-link:hover{ opacity:1; }
+
+  /* ---------- Footer ---------- */
+  .footer{
+    min-height:60vh;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    padding:8vh 8vw;
+  }
+  .footer h3{
+    font-family:'Noto Serif TC', serif;
+    font-size:clamp(1.6rem,4vw,2.4rem);
+    margin-bottom:1rem;
+  }
+  .footer p{
+    font-weight:300;
+    line-height:1.9;
+    max-width:44ch;
+    opacity:0.85;
+  }
+
+  ::selection{ background:rgba(0,0,0,0.15); }
+</style>
+</head>
+<body>
+
+<div class="bg-layer" id="bgLayer"></div>
+<div class="grain"></div>
+<div class="track-bar"><div class="track-bar-fill" id="trackFill"></div></div>
+
+<div class="arc-wrap">
+  <svg viewBox="0 0 120 800" id="arcSvg">
+    <path id="arcPath" d="M 100 20 C 20 220, 20 580, 100 780" fill="none" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"/>
+    <circle id="arcDot" cx="100" cy="20" r="7" fill="currentColor"/>
+  </svg>
+</div>
+
+<section class="hero" data-stage="0">
+  <div class="eyebrow">台南・一日</div>
+  <h1>從碗粿的蒸氣<br>到漁光島的天光</h1>
+  <p class="sub">一條從清晨走到深夜的路線,六個停靠點,順著府城的節奏,慢慢吃、慢慢晃、慢慢聊。跟著右側的弧線往下滑,看時間怎麼從早晨走到夜色。</p>
+  <div class="arc-hint">往下滑,開始今天</div>
+</section>
+
+<section class="stop" data-stage="0">
+  <div class="stop-inner">
+    <span class="stop-index">01 ・ 一天的開始</span>
+    <div class="stop-time">08:00</div>
+    <h2>一味品碗粿</h2>
+    <span class="tag">早餐・國華街</span>
+    <p class="note">開業許久的碗粿老店,米漿蒸得綿密扎實,搭配肉燥與醬汁剛剛好。店面不大,清晨就開始排隊,但翻桌速度快,通常不用等太久。沒有冷氣只有電風扇,是最道地的巷仔內吃法;點一碗魚羹湯一起配,是熟客的固定組合。</p>
+    <div class="meta">
+      <strong>地址</strong>:台南市中西區國華街三段177號<br>
+      <strong>營業時間</strong>:週三至週一 05:00–17:00(週二公休)
+    </div>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E4%B8%80%E5%91%B3%E5%93%81%E7%A2%97%E7%B2%BF%E5%8F%B0%E5%8D%97%E5%9C%8B%E8%8F%AF%E8%A1%97%E4%B8%89%E6%AE%B5177%E8%99%9F" target="_blank" rel="noopener">在地圖上查看 →</a>
+  </div>
+</section>
+
+<section class="stop" data-stage="1">
+  <div class="stop-inner">
+    <span class="stop-index">02 ・ 微風散步</span>
+    <div class="stop-time">12:30</div>
+    <h2>BB YOUR LOVE 女裝服飾・萬昌店</h2>
+    <span class="tag">逛街・衛民街</span>
+    <p class="note">吃飽走一段路,消化順便逛逛。店家風評很好,店員會依身形給穿搭建議,不會讓人有壓力,很適合花點時間試穿慢慢挑,順手把整個週末的穿搭都配好。</p>
+    <div class="meta">
+      <strong>地址</strong>:台南市中西區衛民街50號<br>
+      <strong>營業時間</strong>:約 12:00–22:00
+    </div>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=BB+YOUR+LOVE+%E5%A5%B3%E8%A3%9D%E6%9C%8D%E9%A3%BE+%E8%90%AC%E6%98%8C%E5%BA%97+%E5%8F%B0%E5%8D%97" target="_blank" rel="noopener">在地圖上查看 →</a>
+  </div>
+</section>
+
+<section class="stop" data-stage="2">
+  <div class="stop-inner">
+    <span class="stop-index">03 ・ 午後歇口氣</span>
+    <div class="stop-time">14:30</div>
+    <h2>五妃街豆腐冰</h2>
+    <span class="tag">下午茶・五妃街</span>
+    <p class="note">開了十幾年的老字號豆花冰,豆腐質地綿密細滑,加一勺煉乳味道立刻升級。黑芝麻醬也很受歡迎,香濃但不死甜;湯圓Q彈,是在地人吃了多年還會回訪的固定班底。</p>
+    <div class="meta">
+      <strong>地址</strong>:台南市中西區五妃街206號<br>
+      <strong>營業時間</strong>:約 10:30–21:30(週日 12:00–21:00)
+    </div>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E6%87%B7%E8%88%8A%E5%B0%8F%E5%B7%B7%E6%9D%8F%E4%BB%81%E8%B1%86%E8%85%90%E5%86%B0+%E4%BA%94%E5%A6%83%E8%A1%97206%E8%99%9F" target="_blank" rel="noopener">在地圖上查看 →</a>
+  </div>
+</section>
+
+<section class="stop" data-stage="3">
+  <div class="stop-inner">
+    <span class="stop-index">04 ・ 看光線變化</span>
+    <div class="stop-time">17:00</div>
+    <h2>漁光島</h2>
+    <span class="tag">看夕陽・安平</span>
+    <p class="note">黑沙灘配上安平的日落,是台南少數不用跑遠就能看到的海景。這裡不開放下水游泳,岸上會有巡邏提醒安全,傍晚時分風景最好,天黑後記得留意蚊蟲,早點離開也比較安心。</p>
+    <div class="meta">
+      <strong>地址</strong>:台南市安平區漁光路<br>
+      <strong>開放時間</strong>:全天
+    </div>
+    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=%E6%BC%81%E5%85%89%E5%B3%B6+%E5%AE%89%E5%B9%B3+%E5%8F%B0%E5%8D%97" target="_blank" rel="noopener">在地圖上查看 →</a>
+  </div>
+</section>
+
+<section class="stop" data-stage="4">
+  <div class="stop-inner">
+    <span class="stop-index">05 ・ 坐下來吃飯</span>
+    <div class="stop-time">19:00</div>
+    <h2>晚餐</h2>
+    <span class="tag">安平周邊・自由選</span>
+    <p class="note">看完夕陽肚子也差不多餓了。安平老街跟漁光島附近有不少海鮮跟小吃選擇,這一站故意留白——看當下想吃熱炒、海產還是清爽一點的,都在附近走走就能找到。</p>
+  </div>
+</section>
+
+<section class="stop" data-stage="5">
+  <div class="stop-inner">
+    <span class="stop-index">06 ・ 一天的收尾</span>
+    <div class="stop-time">20:30</div>
+    <h2>找個地方,坐下來聊天</h2>
+    <span class="tag">收尾・不趕時間</span>
+    <p class="note">行程走到這裡,不用再排下一站。找一間安靜的咖啡館、酒吧,或就近坐在河邊、老街的長椅上,把今天走過的地方聊一聊,讓這一天慢慢收尾。</p>
+  </div>
+</section>
+
+<section class="footer" data-stage="5">
+  <h3>今天,就走到這裡。</h3>
+  <p>從清晨的蒸氣到深夜的燈光,六站,一天,不用趕。</p>
+</section>
+
+<script>
+(function(){
+  const stages = [
+    {bg:'#FCEFD8', ink:'#3B2A1A'},
+    {bg:'#F5DCA6', ink:'#3B2A1A'},
+    {bg:'#CFE8DE', ink:'#1F3A34'},
+    {bg:'#F3A46B', ink:'#4A2410'},
+    {bg:'#C97B93', ink:'#FFFFFF'},
+    {bg:'#23283F', ink:'#F5E9D6'}
+  ];
+
+  const bgLayer = document.getElementById('bgLayer');
+  const trackFill = document.getElementById('trackFill');
+  const arcDot = document.getElementById('arcDot');
+  const arcPath = document.getElementById('arcPath');
+  const arcSvg = document.getElementById('arcSvg');
+  const pathLen = arcPath.getTotalLength();
+
+  function applyStage(i){
+    const s = stages[i];
+    bgLayer.style.backgroundColor = s.bg;
+    document.body.style.color = s.ink;
+    arcSvg.style.color = s.ink;
+  }
+
+  const sections = document.querySelectorAll('[data-stage]');
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && e.intersectionRatio > 0.5){
+        applyStage(parseInt(e.target.getAttribute('data-stage')));
+      }
+    });
+  }, {threshold:[0.5]});
+  sections.forEach(s=>observer.observe(s));
+
+  function onScroll(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = Math.min(Math.max(scrollTop / docHeight, 0), 1);
+    trackFill.style.width = (progress*100) + '%';
+    const pt = arcPath.getPointAtLength(progress * pathLen);
+    arcDot.setAttribute('cx', pt.x);
+    arcDot.setAttribute('cy', pt.y);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  applyStage(0);
+})();
+</script>
+
+</body>
+</html>
